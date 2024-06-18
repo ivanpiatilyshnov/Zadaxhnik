@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rick And Morty Characters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-container input,
+        .search-container button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .search-container button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-container button:hover {
+            background-color: #45a049;
+        }
+        
+        .character-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .character-card img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .character-card h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        
+        .character-card p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search for a character">
+            <button id="search-button">Search</button>
+        </div>
+        
+        <div id="character-container"></div>
+    </div>
+    
+    <script>
+        const characterContainer = document.getElementById('character-container');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+
+        function fetchCharacters(name = '') {
+            fetch(`https://rickandmortyapi.com/api/character/?name=${name}`)
+                .then(response => response.json())
+                .then(data => {
+                    characterContainer.innerHTML = '';
+                    data.results.forEach(character => {
+                        const characterCard = document.createElement('div');
+                        characterCard.classList.add('character-card');
+                        
+                        const image = document.createElement('img');
+                        image.src = character.image;
+                        image.alt = character.name;
+                        
+                        const name = document.createElement('h3');
+                        name.textContent = character.name;
+                        
+                        const status = document.createElement('p');
+                        status.textContent = `Status: ${character.status}`;
+                        
+                        characterCard.appendChild(image);
+                        characterCard.appendChild(name);
+                        characterCard.appendChild(status);
+                        
+                        characterContainer.appendChild(characterCard);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim();
+            fetchCharacters(searchTerm);
+        });
+
+        fetchCharacters();
+    </script>
+</body>
+</html>
